@@ -1,0 +1,174 @@
+<template>
+    <div>
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card">
+                   <div class="card-header"><h3 class="text-center"> LISTA DE NORMATIVIDAD </h3>  </div>
+                        <div class="card-header">
+                            <form class="form-inline" autocomplete="off">
+                                    <div class="form-group">
+                                                    <select class="form-control" id="exampleFormControlSelect1" placeholder="Buscar el N° Expediente" v-model="ano" @change="select_año" >
+                                                    <option disabled value="">Seleccione Año</option>
+                                                    <option v-for="item in year" :key="item.id">{{item.año_documento}}</option>
+                                                    </select>
+                                    </div>
+                                    <div class="form-group">
+                                                    <select class="form-control" id="exampleFormControlSelect1" v-model="tipo_documento"  @change="select_documento">
+                                                    <option disabled value="">Seleccione Tipo de Documento</option>
+                                                    <option v-for="documento in cargar_select_documento" :key="documento.id">{{documento.documento}}</option>
+                                                    </select>
+                                    </div>
+                                    <div class="form-group">
+                                                    <input id="searchtxt" type="searchtxt" class="form-control" required placeholder="Texto a Buscar" v-model="searchtxt">
+                                    </div>
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#CrearPersonas" @click.prevent="getNoticias">Buscar</button>  
+                            </form>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-hover table-responsive">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Documento</th>
+                                    <th scope="col">Descripción</th>
+                                    <th scope="col">Archivo</th>
+                                    </tr>
+                                </thead>
+                        
+                                <tbody v-for="(item, index) in documentos" :key="item.id">
+                            
+                                    <tr>
+                                    <th scope="row">{{index+paginate.current_page*paginate.per_page-(paginate.per_page-1)}}</th>
+                                    <td>{{item.tipo_documento}} N°{{item.numero_documento}}-{{item.año_documento}}-{{item.siglas_documento}}</td>
+                                    <td>{{item.resumen_documento}}</td>               
+                                    <td>
+                                        <button class="btn btn-danger" @click="editar(item)"><i class="fas fa-file-download"></i></button>
+                                        
+                                    </td>
+                                    </tr>
+                    
+                                </tbody>
+                            </table>
+                        </div>
+                    
+                </div>
+                <nav>
+                        <ul class="pagination" aria-label="Page navigation example">
+                            <li class="page-item" v-if="paginate.current_page > 1">
+                                <a href="#" class="page-link" @click.prevent="changePage(paginate.current_page - 1)">
+                                    <span>Atras</span>
+                                </a>
+                            </li>
+
+                            <li class="page-item" v-for="page in pagesNumber" :key="page.id" v-bind:class="[ page == isActived ? 'active' : '']">
+                                <a href="#" class="page-link" @click.prevent="changePage(page)">
+                                    {{ page }}
+                                </a>
+                            </li>
+
+                            <li class="page-item" v-if="paginate.current_page < paginate.last_page">
+                                <a href="#" class="page-link" @click.prevent="changePage(paginate.current_page + 1)">
+                                    <span>Siguiente</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+            </div>
+        </div>
+
+              
+    </div>
+</template>
+<script>
+export default {
+    data(){
+        return{
+            documentos: [],
+            cargar_select_documento: [],   
+            ano:'',
+            tipo_documento:'',
+            searchtxt:'',
+            year: [],
+            offset:3,
+            paginate:{
+            'total':0,
+            'current_page':0,
+            'per_page':0,
+            'last_page':0,
+            'from':0,
+            'to':0}
+        }
+    },
+    computed:{
+        isActived:function(){
+            return this.paginate.current_page;
+        },
+        pagesNumber:function(){
+            if(!this.paginate.to){
+                return [];
+            }
+            var from= this.paginate.current_page - this.offset;
+            if(from < 1){
+                from = 1;
+            }
+
+            var to = from + (this.offset*2);
+            if (to >= this.paginate.last_page)
+            {
+                to = this.paginate.last_page;
+            }
+
+            var pagesArray = [];
+            while(from <= to){
+                pagesArray.push(from);
+                from++;
+            }
+            return pagesArray;
+        }
+    }
+    ,
+    mounted(){
+       this.getNoticias();
+        this.getDocumentos();
+    },
+    methods:{
+        getNoticias: function(page){
+
+            axios.get('/api/normas?page='+page+'&ano='+this.ano+'&tipo_documento='+this.tipo_documento+'&searchtxt='+this.searchtxt).then((res)=>{
+            this.documentos= res.data.documentos.data,
+            this.year= res.data.year,
+            this.paginate = res.data.paginate
+        }).catch(function (error) {
+                     alert('No se Realizo esta accion '+error);
+        });
+        },
+
+        getDocumentos(){
+            axios.get('/api/tipodocumentos').then(res=>{
+            this.cargar_select_documento = res.data
+        })
+        },
+
+        changePage: function(page){
+            this.paginate.current_page = page;
+            this.getNoticias(page);
+        },
+
+        select_año(event){
+        this.ano=event.target.value;
+        }, 
+
+        select_documento(event){
+        this.tipo_documento=event.target.value;
+        },
+
+        editar(item){
+            window.open(`/api/download/${item.id}`);
+        },
+
+        buscarnormas(){
+   
+        }
+     }
+}
+</script>
