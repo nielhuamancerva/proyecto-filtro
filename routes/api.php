@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -34,6 +36,12 @@ Route::group(["middleware" => "auth:api"], function () {
     Route::post('/gestorcas', 'App\Http\Controllers\ConvocatoriaCas\GestorConvocatoriaController@store')->name('gestorcas');
     Route::resource('gat', 'App\Http\Controllers\GAT\GatController');
     Route::get('/gestormesadepartesvirtual', 'App\Http\Controllers\MesadePartesVirtual\GestorMesadePartesVirtualController@index');
+
+    Route::resource('filtroDocuments', 'App\Http\Controllers\Documents\DocumentsController');
+    Route::resource('filtrodocumentsgaf', 'App\Http\Controllers\Documents\DocumentsGafController');
+    Route::resource('documentsDetalle', 'App\Http\Controllers\DocumentsDetalle\DocumentsDetalleController');
+    Route::resource('documentsDetalleGaf', 'App\Http\Controllers\DocumentsDetalle\DocumentsDetalleGafController');
+
 });
 
 Route::get('/mesadepartesvirtual', 'App\Http\Controllers\MesadePartesVirtual\MesadePartesVirtualController@index');

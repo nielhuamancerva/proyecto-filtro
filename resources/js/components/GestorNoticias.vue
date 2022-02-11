@@ -112,6 +112,7 @@ export default {
     methods:{
          getNoticias (page){
             User.GetNoticias(page).then((res)=>{
+                console.log(res);
             this.noticias= res.data.noticias.data,
             this.paginate = res.data.paginate
         })

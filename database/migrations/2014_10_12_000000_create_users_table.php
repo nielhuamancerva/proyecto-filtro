@@ -23,6 +23,8 @@ class CreateUsersTable extends Migration
             $table->string('role');
             $table->string('estado');
             $table->timestamps();
+            $table->unsignedBigInteger('areas_id');
+            $table->foreign('areas_id')->references('id')->on('areas')->onDelete('cascade');
         });
     }
 

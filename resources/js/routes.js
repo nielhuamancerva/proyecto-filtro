@@ -1,4 +1,4 @@
-import Home from './components/Home';
+
 import About from './components/About';
 import Register from './components/Register';
 import Login from './components/Login';
@@ -18,6 +18,9 @@ import TramiteVirtual from './components/TramiteVirtual';
 import GestorTramiteVirtual from './components/GestorTramiteVirtual';
 import SeguimientoDocumentoVirtual from './components/BusquedaMesadePartesVirtual';
 import HistoriaDistritodePerene from './components/HistoriaDistritodePerene';
+
+import FiltroGaf from './components/FiltroGaf';
+
 import Router from 'vue-router';
 import Vue from 'vue'
 
@@ -34,10 +37,10 @@ const router = new Router({
     base: process.env.BASE_URL,
     routes: [
   {path: '*', redirect: '/login'},
-  {path: '/', component: Home},
+  {path: '/', component: Login},
   {path: '/about', component: About},
   {path: '/cas', component: Cas},
-  {path: '/normas', component: Normas},
+  {path: '/normas', component: Normas,name:"Normas"},
   {path: '/login', component: Login},
   {path: "/users",component: Users,name:"Users"},
   {path: '/gestorcas',component: GestoraCas},  
@@ -53,6 +56,7 @@ const router = new Router({
   {path: "/noticias",component: Noticias},
   {path: "/gestornormas",component: GestorNormas},
   {path: "/HistoriaDistritodePerene",component: HistoriaDistritodePerene},
+  {path: "/filtrodocumentsgaf",component: FiltroGaf,name:"FiltroGaf"},
     ]
    
 });
@@ -61,7 +65,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
  
-  const publicPages = ['/noticias','/login','/cas','/normas','/about','/','/mesadepartesvirtual','/HistoriaDistritodePerene'];
+  const publicPages = ['/noticias','/login','/cas','/about','/','/mesadepartesvirtual','/HistoriaDistritodePerene'];
   const authRequired = !publicPages.includes(to.path);
   console.log(authRequired);
   const loggedIn = localStorage.getItem('auth-token');

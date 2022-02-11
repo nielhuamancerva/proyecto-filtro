@@ -25,12 +25,6 @@
     <div id="app">
             @yield('content')
     </div>
-    <footer id="sticky-footer" class="py-2 bg-dark text-white">
-              <!-- Copyright -->
-              <div class="font-weight-bold footer-copyright text-center text-white py-2">&copy;Municipalidad Distrital de Perene - Todos lo derechos reservados
-                    <p class="font-weight-bold text-white">Dirección: Jr. 22 de Octubre N° 140 - Perene Teléfono:(064)-544077 - RUC: 20195238961 </p>
-              </div>
-              <!-- Copyright -->
-            </footer>
+
 </body>
 </html>
